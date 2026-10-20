@@ -101,7 +101,7 @@
                 </button>
             </nav>
         </div>
-
+        
         <div class="p-4 border-t border-slate-100 bg-slate-50/50 flex items-center space-x-3">
             <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span></span>
             <div><p class="text-xs font-black text-slate-800">System Online</p><p class="text-[10px] text-slate-400 font-bold">All Modules Active</p></div>
@@ -122,7 +122,15 @@
             </div>
 
             <div class="flex items-center space-x-5">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-extrabold bg-sky-100 text-brand-700"><i class="fa-solid fa-shield-halved mr-1.5"></i> HIPAA Compliant</span>
+              <!-- Role Switcher Dropdown -->
+<div class="flex items-center space-x-2 bg-gray-100 p-1.5 rounded-lg border border-gray-200">
+    <label for="userRoleSelect" class="text-xs font-semibold text-gray-600">View As:</label>
+    <select id="userRoleSelect" onchange="switchUserRole(this.value)" class="text-xs font-bold bg-white text-blue-600 border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500">
+        <option value="admin">Admin (Full Access)</option>
+        <option value="doctor">Doctor Portal</option>
+        <option value="patient">Patient View</option>
+    </select>
+</div>
                 <div class="flex items-center space-x-3 border-l pl-5 border-slate-200">
                     <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-accent-500 text-white font-extrabold text-sm flex items-center justify-center shadow-md">GA</div>
                     <div class="hidden md:block text-left"><p class="text-xs font-black text-slate-900 leading-tight">GMG ACK Super Admin</p><p class="text-[10px] text-slate-400 font-extrabold">Chief Medical Officer</p></div>
@@ -132,6 +140,122 @@
 
         <!-- Main Scrollable Body -->
         <main class="flex-1 overflow-y-auto p-6 md:p-8 space-y-8">
+
+            <!-- Dashboard Module Container -->
+<div id="mod-dashboard" class="module-section space-y-8">
+
+  <!-- DYNAMIC REAL DOCTOR PORTAL -->
+<div id="doctor-stats-panel" class="hidden space-y-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-blue-50 border-l-4 border-blue-600 p-4 rounded-2xl shadow-sm">
+            <p class="text-[11px] font-extrabold text-blue-700 uppercase">Today's Total Patients</p>
+            <h3 class="text-3xl font-black text-slate-800 mt-1"><span id="docRealTotal">0</span></h3>
+        </div>
+
+        <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-2xl shadow-sm">
+            <p class="text-[11px] font-extrabold text-amber-700 uppercase">In Waiting Queue</p>
+            <h3 class="text-3xl font-black text-slate-800 mt-1"><span id="docRealWaiting">0</span></h3>
+        </div>
+
+        <div class="bg-emerald-50 border-l-4 border-emerald-600 p-4 rounded-2xl shadow-sm">
+            <p class="text-[11px] font-extrabold text-emerald-700 uppercase">Checkups Completed</p>
+            <h3 class="text-3xl font-black text-slate-800 mt-1"><span id="docRealCompleted">0</span></h3>
+        </div>
+    </div>
+
+    <!-- Doctor Table Queue -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200">
+        <h4 class="text-xs font-extrabold text-slate-700 uppercase mb-3">Live Assigned Patient Queue</h4>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                    <tr class="border-b bg-slate-50 text-slate-500 font-bold">
+                        <th class="p-2">Patient Name</th>
+                        <th class="p-2">Age</th>
+                        <th class="p-2">Issue</th>
+                        <th class="p-2">Fee Paid</th>
+                        <th class="p-2">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="doctorQueueTable">
+                    <tr>
+                        <td colspan="5" class="p-4 text-center text-slate-400">No patients in queue yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+    <!-- 2. Aapke Purane Top Cards Grid (Registered Doctors, Today Appointments, Today Revenue) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Purane Cards Code Here -->
+    </div>
+
+ <!-- REAL PATIENT APPOINTMENT PORTAL -->
+<div id="patient-portal-panel" class="hidden space-y-6 mb-8">
+    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-4 border-b pb-3">
+            <div>
+                <h3 class="text-base font-extrabold text-slate-800">Patient Self-Booking Portal</h3>
+                <p class="text-xs text-slate-500">Fill your details, select doctor, and confirm fee deposit</p>
+            </div>
+            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-1 rounded-full">Live Gateway Active</span>
+        </div>
+
+        <form id="realPatientForm" onsubmit="processRealAppointment(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Patient Full Name</label>
+                <input type="text" id="p_name" name="patient_name" required placeholder="e.g. Ayesha Khan" class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Age</label>
+                <input type="number" id="p_age" name="age" min="1" max="120" required placeholder="e.g. 25" class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Select Specialist / Doctor</label>
+                <select id="p_doctor" name="doctor_name" required onchange="updateConsultationFee(this.value)" class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none bg-white">
+                    <option value="">Select Doctor...</option>
+                    <option value="Dr. Sarah Ahmed (Cardiology)" data-fee="2500">Dr. Sarah Ahmed (Cardiology)</option>
+                    <option value="Dr. Ali Raza (General Physician)" data-fee="1500">Dr. Ali Raza (General Physician)</option>
+                    <option value="Dr. Hamza Malik (Orthopedic)" data-fee="2000">Dr. Hamza Malik (Orthopedic)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Health Issue / Reason</label>
+                <input type="text" id="p_issue" name="health_issue" required placeholder="e.g. Severe headache, Fever" class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Consultation Fee (PKR)</label>
+                <input type="text" id="p_fee" name="fee" readonly value="Rs. 0" class="w-full p-2.5 text-xs bg-slate-100 font-bold text-emerald-700 border border-slate-300 rounded-xl outline-none">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Payment Method</label>
+                <select id="p_payment" name="payment_method" required class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none bg-white">
+                    <option value="Cash at Counter">Cash Deposit at Reception</option>
+                    <option value="Online / Card">Online Debit/Credit Card</option>
+                </select>
+            </div>
+
+            <div class="md:col-span-3 text-right mt-2">
+                <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-6 py-3 rounded-xl transition shadow-md">
+                    Confirm & Deposit Fee
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Active Patient Ticket Box -->
+    <div id="patientBookingReceipt" class="hidden bg-emerald-50 border border-emerald-200 p-5 rounded-2xl shadow-sm"></div>
+</div>
+
+
+
+</div>
 
             <!-- 1. DASHBOARD -->
             <div id="mod-dashboard" class="module-section space-y-8">
@@ -156,15 +280,17 @@
                         <div><p class="text-[11px] font-extrabold text-slate-400 uppercase">Today Appointments</p><p id="dashAppointments" class="text-2xl font-black text-teal-600 mt-1">2 Booked</p><span class="text-[10px] text-accent-500 font-extrabold"><i class="fa-solid fa-calendar-check mr-1"></i> Live Schedule</span></div>
                         <div class="w-12 h-12 rounded-2xl bg-teal-100 text-accent-500 flex items-center justify-center text-xl"><i class="fa-solid fa-calendar-days"></i></div>
                     </div>
-                  <div class="glass-card p-6 rounded-2xl shadow-sm flex items-center justify-between">
+                  <div class="financial-metric glass-card p-6 rounded-2xl shadow-sm flex items-center justify-between">
     <div>
         <p class="text-[11px] font-extrabold text-slate-400 uppercase">Today Revenue</p>
-        <p id="dashRevenue" class="text-2xl font-black text-emerald-600 mt-1">$0.00</p>
+        <p id="dashRevenue" class="text-2xl  font-black text-emerald-600 mt-1">$0.00</p>
         <span class="text-[10px] text-emerald-600 font-extrabold"><i class="fa-solid fa-wallet mr-1"></i> Live from Billing Ledger</span>
     </div>
     <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl">
         <i class="fa-solid fa-wallet"></i>
     </div>
+
+
 </div>
                 </div>
 
@@ -1310,6 +1436,146 @@
             document.getElementById('userWebcam').classList.add('hidden');
             document.getElementById('videoPlaceholderText').classList.remove('hidden');
         }
+
+  let globalAppointments = [];
+
+function updateConsultationFee(docName) {
+    const docSelect = document.getElementById('p_doctor');
+    const selectedOption = docSelect.options[docSelect.selectedIndex];
+    const fee = selectedOption.getAttribute('data-fee') || '0';
+    document.getElementById('p_fee').value = `Rs. ${fee}`;
+}
+
+function processRealAppointment(e) {
+    e.preventDefault();
+
+    const name = document.getElementById('p_name').value;
+    const age = document.getElementById('p_age').value;
+    const doctor = document.getElementById('p_doctor').value;
+    const issue = document.getElementById('p_issue').value;
+    const fee = document.getElementById('p_fee').value;
+    const payment = document.getElementById('p_payment').value;
+
+    const newAppointment = {
+        id: 'APT-' + Math.floor(1000 + Math.random() * 9000),
+        name,
+        age,
+        doctor,
+        issue,
+        fee,
+        payment,
+        status: 'Waiting'
+    };
+
+    globalAppointments.push(newAppointment);
+
+    const receipt = document.getElementById('patientBookingReceipt');
+    receipt.classList.remove('hidden');
+    receipt.innerHTML = `
+        <h4 class="text-xs font-bold text-emerald-900 uppercase">Appointment Confirmed & Fee Deposited!</h4>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2 text-xs text-slate-700">
+            <p><strong>Token ID:</strong> ${newAppointment.id}</p>
+            <p><strong>Patient:</strong> ${name} (${age} yrs)</p>
+            <p><strong>Doctor:</strong> ${doctor}</p>
+            <p><strong>Fee Status:</strong> <span class="text-emerald-700 font-bold">${fee} (${payment})</span></p>
+        </div>
+    `;
+
+    document.getElementById('realPatientForm').reset();
+    document.getElementById('p_fee').value = "Rs. 0";
+
+    renderDoctorQueue();
+}
+
+function renderDoctorQueue() {
+    const table = document.getElementById('doctorQueueTable');
+    if (!table) return;
+
+    if (globalAppointments.length === 0) {
+        table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">No patients in queue yet.</td></tr>`;
+        return;
+    }
+
+    table.innerHTML = globalAppointments.map((apt, index) => `
+        <tr class="border-b hover:bg-slate-50">
+            <td class="p-2 font-bold">${apt.name}</td>
+            <td class="p-2">${apt.age}</td>
+            <td class="p-2">${apt.issue}</td>
+            <td class="p-2 text-emerald-600 font-bold">${apt.fee}</td>
+            <td class="p-2">
+                ${apt.status === 'Waiting' 
+                    ? `<button onclick="markChecked(${index})" class="bg-blue-600 text-white px-2 py-1 rounded text-[10px] font-bold">Mark Complete</button>`
+                    : `<span class="text-emerald-600 font-bold text-[10px]">✔ Completed</span>`
+                }
+            </td>
+        </tr>
+    `).join('');
+
+    const total = globalAppointments.length;
+    const waiting = globalAppointments.filter(a => a.status === 'Waiting').length;
+    const completed = globalAppointments.filter(a => a.status === 'Completed').length;
+
+    if(document.getElementById('docRealTotal')) document.getElementById('docRealTotal').innerText = total;
+    if(document.getElementById('docRealWaiting')) document.getElementById('docRealWaiting').innerText = waiting;
+    if(document.getElementById('docRealCompleted')) document.getElementById('docRealCompleted').innerText = completed;
+}
+
+function markChecked(index) {
+    globalAppointments[index].status = 'Completed';
+    renderDoctorQueue();
+}
+
+function switchUserRole(role) {
+    const financialCards = document.querySelectorAll('.financial-metric');
+    const doctorPanel = document.getElementById('doctor-stats-panel');
+    const patientPanel = document.getElementById('patient-portal-panel');
+
+    if (role === 'admin') {
+        financialCards.forEach(card => card.classList.remove('hidden'));
+        if (doctorPanel) doctorPanel.classList.add('hidden');
+        if (patientPanel) patientPanel.classList.add('hidden');
+    } 
+    else if (role === 'doctor') {
+        financialCards.forEach(card => card.classList.add('hidden'));
+        if (doctorPanel) doctorPanel.classList.remove('hidden');
+        if (patientPanel) patientPanel.classList.add('hidden');
+        renderDoctorQueue();
+    } 
+    else if (role === 'patient') {
+        financialCards.forEach(card => card.classList.add('hidden'));
+        if (doctorPanel) doctorPanel.classList.add('hidden');
+        if (patientPanel) patientPanel.classList.remove('hidden');
+    }
+}
+
+function savePatientRecord(event) {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append('patient_name', document.getElementById('patientFullNameInput').value);
+    formData.append('age', document.getElementById('patientAgeInput').value);
+    formData.append('doctor_name', document.getElementById('selectDoctorInput').value);
+    formData.append('health_issue', document.getElementById('healthIssueInput').value);
+    formData.append('fee', document.getElementById('consultationFeeInput').value || 0);
+    formData.append('payment_method', document.getElementById('paymentMethodInput').value);
+
+    fetch('api/save_patient_booking.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Record Database Mein Save Ho Gaya!');
+            location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(err => alert('Server connection error!'));
+}
+
+
     </script>
 </body>
 </html>
